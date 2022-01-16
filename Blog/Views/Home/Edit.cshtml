@@ -1,0 +1,15 @@
+﻿@model Post
+
+<div>
+    <form asp-controller="Home" asp-action="Edit" method="post">
+        <div>
+            <label>Titel</label>
+            <input asp-for="Title"/>
+        </div>
+        <div>
+            <label>Body</label>
+            <input asp-for="Body"/>
+        </div>
+        <input type="submit" value="submit" />
+    </form>
+</div>
