@@ -4,11 +4,11 @@ namespace Blog.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppDbContext context;
+        private readonly IRepository repository;
 
-        public HomeController(AppDbContext context)
+        public HomeController(IRepository repository)
         {
-            this.context = context;
+            this.repository = repository;
         }
 
         public IActionResult Index()
@@ -28,11 +28,16 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Post post)
+        public async  Task<IActionResult> Edit(Post post)
         {
+            repository.addPost(post);
 
+            if (await repository.SaveChanges())
+            {
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction("Index");
+            return View(post);
         }
     }
 }
