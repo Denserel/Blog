@@ -13,24 +13,41 @@ namespace Blog.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var posts = repository.getPost(null);
+
+            return View(posts);
         }
 
-        public IActionResult Post ()
+        public IActionResult Post (int id)
         {
-            return View();
+            var post = repository.getPost(id).FirstOrDefault();
+
+            return View(post);
         }
 
         [HttpGet]
-        public IActionResult Edit ()
+        public IActionResult Edit (int? id)
         {
-            return View(new Post());
+            if (id == null)
+            {
+                return View(new Post());
+            }
+
+            var post = repository.getPost(id).FirstOrDefault();
+            return View(post);
         }
 
         [HttpPost]
         public async  Task<IActionResult> Edit(Post post)
         {
-            repository.addPost(post);
+            if (post.Id > 0)
+            {
+                repository.updatePost(post);
+            }
+            else
+            {
+                repository.addPost(post);
+            }
 
             if (await repository.SaveChanges())
             {
@@ -38,6 +55,15 @@ namespace Blog.Controllers
             }
 
             return View(post);
+        }
+
+        [HttpGet]
+        public async Task <IActionResult> Delete(int id)
+        {
+            repository.deletePost(id);
+            await repository.SaveChanges();
+            
+            return RedirectToAction("Index");
         }
     }
 }

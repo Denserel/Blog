@@ -28,9 +28,10 @@
                 var result = db.Posts.FirstOrDefault(post => post.Id == id);
 
                 posts.Add(result ?? new Post());
+            }else
+            {
+                posts = db.Posts.ToList();
             }
-
-            posts = db.Posts.ToList();
 
             return posts;
         }
