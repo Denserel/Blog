@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,50 +10,41 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 
 builder.Services.AddControllersWithViews();
 
-
 builder.Services.AddTransient<IRepository, Repository>();
 
 var app = builder.Build();
 
 try
 {
-    var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var context = app.Services.GetRequiredService<AppDbContext>();
+    var roleManager = app.Services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = app.Services.GetRequiredService<UserManager<IdentityUser>>();
 
     context.Database.EnsureCreated();
 
-    var adminRole = new IdentityRole("Admin");
-
-    if (!context.Roles.Any())
+    var role = new IdentityRole("Administrator");
+    // Create Administrator role if it doesn't exist
+    if (!roleManager.RoleExistsAsync("Administrator").Result)
     {
-        // Create Admin role
-        roleManager.CreateAsync(adminRole).GetAwaiter().GetResult();
+        roleManager.CreateAsync(role).Wait();
     }
 
-    if (!context.Users.Any(user => user.UserName == "admin"))
+    // Create Administrator user if it doesn't exist
+    if (userManager.FindByNameAsync("administrator").Result == null)
     {
-        //Create admin user
-        var adminUser = new IdentityUser
+        var user = new IdentityUser
         {
-            UserName = "admin",
-            Email = "admin@email.com"
+            UserName = "administrator",
+            Email = "administrator@email.com"
         };
-        userManager.CreateAsync(adminUser, "Strong0Password!").GetAwaiter().GetResult();
-        // Add Admin role to admin user
-        userManager.AddToRoleAsync(adminUser, adminRole.Name).GetAwaiter().GetResult();
+        userManager.CreateAsync(user, "Strong0Password!").Wait();
+
+        userManager.AddToRoleAsync(user, role.Name).Wait();
     }
 }
 catch (Exception e)
 {
     Console.WriteLine(e.Message);
-}
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
 
 app.UseAuthentication();
