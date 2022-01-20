@@ -3,18 +3,19 @@
 }
 
 a {
+    color: hsl(242, 31%, 92%);
     text-decoration: none;
 }
 
     a:hover {
-        color: darkslateblue
+        color: black;
     }
 
 nav {
-    background-color: hsl(148, 2%, 37%);
+    display: flex;
+    background-color: darkslateblue;
     height: 3.2rem;
     width: 100%;
-    text-align: center;
 }
 
     nav a {
@@ -22,7 +23,14 @@ nav {
         padding: 1rem
     }
 
+        nav a:last-child {
+            margin-left: auto;
+        }
+
 .main-img {
+    display: grid;
+    justify-content: center;
+    align-content: center;
     position: relative;
     height: 30rem;
     background: url('../img/static/Main_bacground.png');
@@ -30,39 +38,38 @@ nav {
     background-size: cover;
 }
 
-.title {
-    position: absolute;
-    color: white;
-    font-size: 3rem;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 35%;
-    text-shadow: 0 0 0.2rem black;
+    .main-img span, figure figcaption {
+        color: white;
+        font-size: 3rem;
+        text-shadow: 0 0 0.2rem black;
+    }
+
+figure {
+    margin: 0.5rem;
+    width: 30rem;
+    position: relative;
+    box-shadow: 0 0 0.4rem black;
+    height: 25rem;
 }
 
+    figure img {
+        width: 100%; 
+        object-fit: cover;
+    }
+
+    figure figcaption {
+        position: absolute;
+        top: 50%;
+        left:0;
+        width: 100%;
+        text-align: center;
+    }
+
 .container {
+    display: grid;
+    justify-content: center;
     max-width: 50rem;
     width: 100%;
     margin: auto;
 }
 
-.post {
-    margin: 0.5rem;
-    position: relative;
-    height: 25rem;
-    display: flex;
-    box-shadow: 0 0 0.4rem 0 black;
-}
-
-    .post img {
-        width: 100%;
-        object-fit: cover;
-    }
-
-    .post-body{
-        margin: 0.4rem;
-    }
-
-.no-shadow{
-    box-shadow:none;
-}

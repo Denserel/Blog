@@ -1,18 +1,18 @@
 ﻿@model IEnumerable<Post>
 
 <div class="main-img">
-    <span class="title">A Blog</span>
+    <span>A Blog</span>
 </div>
 
 <div class="container">
     @foreach (var post in Model)
     {
         var path = $"/image/{post.Image}";
-        <a class="post" asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
-            <img src="@path">
-            <span class="title">
-                @post.Title
-            </span>
+        <a asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
+            <figure>
+                <img src="@path">
+                <figcaption>@post.Title</figcaption>
+            </figure>
         </a>
     }
 </div>
