@@ -1,22 +1,19 @@
 ﻿@model IEnumerable<Post>
 
-<h2>Home page!</h2>
-
-<div>
-    <ul>
-        @foreach (var post in Model)
-        {
-            <li>
-                <a asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
-                    @post.Title
-                </a>
-                <a asp-controller="Home" asp-action="Edit" asp-route-id="@post.Id">
-                    Edit
-                </a>
-                <a asp-controller="Home" asp-action="Delete" asp-route-id="@post.Id">
-                    Delete
-                </a>
-            </li>
-        }
-    </ul>
+<div class="main-img">
+    <span class="title">A Blog</span>
 </div>
+
+<div class="container">
+    @foreach (var post in Model)
+    {
+        var path = $"/image/{post.Image}";
+        <a class="post" asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
+            <img src="@path">
+            <span class="title">
+                @post.Title
+            </span>
+        </a>
+    }
+</div>
+

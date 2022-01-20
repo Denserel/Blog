@@ -5,10 +5,12 @@ namespace Blog.Controllers
     public class HomeController : Controller
     {
         private readonly IRepository repository;
+        private readonly IFileManager fileManager;
 
-        public HomeController(IRepository repository)
+        public HomeController(IRepository repository, IFileManager fileManager)
         {
             this.repository = repository;
+            this.fileManager = fileManager;
         }
 
         public IActionResult Index()
@@ -25,45 +27,11 @@ namespace Blog.Controllers
             return View(post);
         }
 
-        [HttpGet]
-        public IActionResult Edit (int? id)
+        [HttpGet("/Image/{image}")]
+        public IActionResult Image (string image)
         {
-            if (id == null)
-            {
-                return View(new Post());
-            }
-
-            var post = repository.getPost(id).FirstOrDefault();
-            return View(post);
-        }
-
-        [HttpPost]
-        public async  Task<IActionResult> Edit(Post post)
-        {
-            if (post.Id > 0)
-            {
-                repository.updatePost(post);
-            }
-            else
-            {
-                repository.addPost(post);
-            }
-
-            if (await repository.SaveChanges())
-            {
-                return RedirectToAction("Index");
-            }
-
-            return View(post);
-        }
-
-        [HttpGet]
-        public async Task <IActionResult> Delete(int id)
-        {
-            repository.deletePost(id);
-            await repository.SaveChanges();
-            
-            return RedirectToAction("Index");
+            var mime = image.Substring(image.LastIndexOf('.')+ 1);
+            return new FileStreamResult(fileManager.GetImage(image), $"image/{mime}");
         }
     }
 }

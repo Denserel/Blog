@@ -4,16 +4,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>()
-    .AddRoles<IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+});
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IRepository, Repository>();
+builder.Services.AddTransient<IFileManager, FileManager>();
 
 var app = builder.Build();
-
+// Seed Admin
 try
 {
     var context = app.Services.GetRequiredService<AppDbContext>();
@@ -24,7 +29,7 @@ try
 
     var role = new IdentityRole("Administrator");
     // Create Administrator role if it doesn't exist
-    if (!roleManager.RoleExistsAsync("Administrator").Result)
+    if (!roleManager.RoleExistsAsync(role.Name).Result)
     {
         roleManager.CreateAsync(role).Wait();
     }
@@ -47,9 +52,12 @@ catch (Exception e)
     Console.WriteLine(e.Message);
 }
 
-app.UseAuthentication();
+app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
 
