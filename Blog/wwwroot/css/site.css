@@ -36,6 +36,7 @@ nav {
     background: url('../img/static/Main_bacground.png');
     background-position: center;
     background-size: cover;
+    background-repeat: no-repeat;
 }
 
     .main-img span, figure figcaption {
@@ -45,15 +46,16 @@ nav {
     }
 
 figure {
-    margin: 0.5rem;
+    margin: 0.6rem;
     width: 30rem;
     position: relative;
     box-shadow: 0 0 0.4rem black;
-    height: 25rem;
+    height: 30rem;
 }
 
     figure img {
-        width: 100%; 
+        width: 100%;
+        height: 100%;
         object-fit: cover;
     }
 
@@ -67,6 +69,7 @@ figure {
 
 .container {
     display: grid;
+    gap: 0.5rem;
     justify-content: center;
     max-width: 50rem;
     width: 100%;
