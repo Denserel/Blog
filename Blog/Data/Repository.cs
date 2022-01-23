@@ -2,40 +2,45 @@
 {
     public class Repository : IRepository
     {
-        private readonly AppDbContext db;
+        private readonly AppDbContext dataBase;
 
-        public Repository(AppDbContext db)
+        public Repository(AppDbContext dataBase)
         {
-            this.db = db;
+            this.dataBase = dataBase;
         }
 
         public void addPost(Post post)
         {
-            db.Posts.Add(post);
+            dataBase.Posts.Add(post);
         }
 
         public void deletePost(int id)
         {
-            db.Posts.Remove(getPost(id));
+            dataBase.Posts.Remove(getPost(id));
         }
 
         public Post getPost(int id)
         {
-            return db.Posts.FirstOrDefault(post => post.Id == id); 
+            return dataBase.Posts.FirstOrDefault(post => post.Id == id); 
         }
 
         public void updatePost(Post post)
         {
-            db.Posts.Update(post);
+            dataBase.Posts.Update(post);
         }
         public List<Post> getAllPosts()
         {
-            return db.Posts.ToList();
+            return dataBase.Posts.ToList();
         }
-        
+        public List<Post> getAllPosts(string category)
+        {
+            return dataBase.Posts
+                .Where(post => post.Category.ToLower().Equals(category.ToLower()))
+                .ToList();
+        }
         public async Task<bool> SaveChanges()
         {
-            if (await db.SaveChangesAsync() > 0)
+            if (await dataBase.SaveChangesAsync() > 0)
             {
                 return true;
             }

@@ -36,6 +36,9 @@ namespace Blog.Controllers
                 Id = post.Id,
                 Title = post.Title,
                 Body = post.Body,
+                Description = post.Description,
+                Tags = post.Tags,
+                Category = post.Category,
                 CurrentImage = post.Image
             });
         }
@@ -47,7 +50,10 @@ namespace Blog.Controllers
             {
                 Id = postVm.Id,
                 Title = postVm.Title,
-                Body = postVm.Body
+                Body = postVm.Body,
+                Description = postVm.Description,
+                Tags = postVm.Tags,
+                Category = postVm.Category
             };
 
             if(postVm.Image == null)
@@ -56,6 +62,11 @@ namespace Blog.Controllers
             }
             else
             {
+                if (!string.IsNullOrEmpty(postVm.CurrentImage))
+                {
+                    fileManager.RemoveImage(postVm.CurrentImage);
+                }
+
                 post.Image = await fileManager.SaveImage(postVm.Image);
             }
 
@@ -79,6 +90,8 @@ namespace Blog.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            fileManager.RemoveImage(repository.getPost(id).Image);
+
             repository.deletePost(id);
             await repository.SaveChanges();
 

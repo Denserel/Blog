@@ -13,9 +13,9 @@ namespace Blog.Controllers
             this.fileManager = fileManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string category)
         {
-            var posts = repository.getAllPosts();
+            var posts = string.IsNullOrEmpty(category) ? repository.getAllPosts() : repository.getAllPosts(category);
 
             return View(posts);
         }
@@ -31,6 +31,7 @@ namespace Blog.Controllers
         public IActionResult Image (string image)
         {
             var mime = image.Substring(image.LastIndexOf('.')+ 1);
+
             return new FileStreamResult(fileManager.GetImage(image), $"image/{mime}");
         }
     }

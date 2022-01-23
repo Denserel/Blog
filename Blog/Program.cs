@@ -12,6 +12,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Auth/Login";
 });
 
+builder.Services.AddWebOptimizer();
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IRepository, Repository>();
@@ -52,6 +54,12 @@ catch (Exception e)
     Console.WriteLine(e.Message);
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseWebOptimizer();
 app.UseStaticFiles();
 
 app.UseRouting();

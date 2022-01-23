@@ -4,5 +4,6 @@
     {
         FileStream GetImage(string image);
         Task<string> SaveImage(IFormFile image);
+        void RemoveImage(string image);
     }
 }

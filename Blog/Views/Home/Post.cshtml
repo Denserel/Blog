@@ -1,16 +1,21 @@
 ﻿@model Post
+@{
+    ViewBag.Titel = @Model.Title;
+    ViewBag.Description = @Model.Description;
+    ViewBag.Keywords = @Model.Tags;
+}
 
 <article class="container">
-    <div>
-        @if (!String.IsNullOrEmpty(Model.Image))
-        {
-            var path = $"/image/{Model.Image}";
-            <figure>
-                <img src="@path">
-                <figcaption>@Model.Title</figcaption>
-            </figure>
-        }
-    </div>
+
+    @if (!String.IsNullOrEmpty(Model.Image))
+    {
+        var path = $"/image/{Model.Image}";
+        <figure>
+            <img src="@path">
+            <figcaption>@Model.Title</figcaption>
+        </figure>
+    }
+
     <div>
         @Html.Raw(Model.Body)
     </div>

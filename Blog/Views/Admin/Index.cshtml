@@ -1,13 +1,12 @@
 ﻿@model IEnumerable<Post>
 
-<h2>Admin page!</h2>
-<a asp-controller="Admin" asp-action="Edit">Create Post</a>
-
-<div>
-    <ul>
+<div class="container">
+    <h2>Admin page!</h2>
+    <a asp-controller="Admin" asp-action="Edit">Create Post</a>
+    <div>
         @foreach (var post in Model)
         {
-            <li>
+            <div>
                 @post.Title
                 -
                 <a asp-controller="Admin" asp-action="Edit" asp-route-id="@post.Id">
@@ -17,7 +16,8 @@
                 <a asp-controller="Admin" asp-action="Delete" asp-route-id="@post.Id">
                     Delete
                 </a>
-            </li>
+            </div>
         }
-    </ul>
+
+    </div>
 </div>

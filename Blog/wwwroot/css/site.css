@@ -1,9 +1,12 @@
 ﻿body {
     margin: 0;
+    background-color:hsl(0, 1%, 16%);
+    color:white
 }
 
 a {
     text-decoration: none;
+    color: white
 }
 
     a:hover {
@@ -26,6 +29,15 @@ nav {
         nav a:last-child {
             margin-left: auto;
         }
+
+form {
+    display: grid;
+    gap: 0.5rem;
+}
+
+    form label {
+        display: block;
+    }
 
 .main-img {
     display: grid;
@@ -62,7 +74,7 @@ figure {
     figure figcaption {
         position: absolute;
         top: 50%;
-        left:0;
+        left: 0;
         width: 100%;
         text-align: center;
     }
@@ -73,6 +85,6 @@ figure {
     justify-content: center;
     max-width: 50rem;
     width: 100%;
-    margin: auto;
+    height:100%;
+    margin: 1rem auto;
 }
-

@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="@ViewBag.Description" />
+    <meta name="keywords" content="@ViewBag.Keywords" />
     <title>@ViewBag.Title</title>
     @*<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />*@
     <link rel="stylesheet" href="~/css/site.css" />
@@ -12,6 +14,10 @@
     <header>
         <nav>
             <a asp-controller="Home" asp-action="index">Home</a>
+            @*<form asp-controller="Home" asp-action="index" asp-route-category="" >
+                <input type="search" placeholder="Search" />
+                <input type="submit" value="Search" />
+            </form>*@
             @if (User.Identity.IsAuthenticated)
             {
                 <a asp-controller="Admin" asp-action="index">Admin</a>
@@ -24,9 +30,7 @@
         </nav>
     </header>
     <main>
-        <div class="">
-            @RenderBody()
-        </div>
+        @RenderBody()
     </main>
     @*<script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>*@
     @RenderSection("scripts", false)
