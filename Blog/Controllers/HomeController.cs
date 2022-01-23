@@ -15,14 +15,14 @@ namespace Blog.Controllers
 
         public IActionResult Index()
         {
-            var posts = repository.getPost(null);
+            var posts = repository.getAllPosts();
 
             return View(posts);
         }
 
         public IActionResult Post (int id)
         {
-            var post = repository.getPost(id).FirstOrDefault();
+            var post = repository.getPost(id);
 
             return View(post);
         }

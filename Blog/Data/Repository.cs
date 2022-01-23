@@ -16,29 +16,21 @@
 
         public void deletePost(int id)
         {
-            db.Posts.Remove(getPost(id).FirstOrDefault());
+            db.Posts.Remove(getPost(id));
         }
 
-        public List<Post> getPost(int? id)
+        public Post getPost(int id)
         {
-            List<Post> posts = new();
-
-            if (id != null)
-            {
-                var result = db.Posts.FirstOrDefault(post => post.Id == id);
-
-                posts.Add(result ?? new Post());
-            }else
-            {
-                posts = db.Posts.ToList();
-            }
-
-            return posts;
+            return db.Posts.FirstOrDefault(post => post.Id == id); 
         }
 
         public void updatePost(Post post)
         {
             db.Posts.Update(post);
+        }
+        public List<Post> getAllPosts()
+        {
+            return db.Posts.ToList();
         }
         
         public async Task<bool> SaveChanges()
@@ -49,5 +41,6 @@
             }
             return false;
         }
+
     }
 }

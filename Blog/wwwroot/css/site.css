@@ -3,12 +3,11 @@
 }
 
 a {
-    color: hsl(242, 31%, 92%);
     text-decoration: none;
 }
 
     a:hover {
-        color: black;
+        color: orange;
     }
 
 nav {
@@ -19,6 +18,7 @@ nav {
 }
 
     nav a {
+        color: hsl(242, 31%, 92%);
         display: inline-block;
         padding: 1rem
     }

@@ -8,11 +8,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\img\blog\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\lib\Trumbowyg-main\.github\FUNDING.yml" />
-    <None Include="wwwroot\lib\Trumbowyg-main\.github\ISSUE_TEMPLATE.md" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
   <ItemGroup>

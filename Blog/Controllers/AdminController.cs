@@ -17,7 +17,7 @@ namespace Blog.Controllers
 
         public IActionResult Index()
         {
-            var posts = repository.getPost(null);
+            var posts = repository.getAllPosts();
 
             return View(posts);
         }
@@ -30,7 +30,7 @@ namespace Blog.Controllers
                 return View(new PostViewModel());
             }
 
-            var post = repository.getPost(id).FirstOrDefault();
+            var post = repository.getPost((int) id);
             return View(new PostViewModel
             {
                 Id = post.Id,
