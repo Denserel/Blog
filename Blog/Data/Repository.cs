@@ -21,7 +21,10 @@
 
         public Post getPost(int id)
         {
-            return dataBase.Posts.FirstOrDefault(post => post.Id == id); 
+            return dataBase.Posts.
+                Include(post => post.Comments)
+                .ThenInclude(comment => comment.SubComments)
+                .FirstOrDefault(post => post.Id == id); 
         }
 
         public void updatePost(Post post)
@@ -38,7 +41,7 @@
                 .Where(post => post.Category.ToLower().Equals(category.ToLower()))
                 .ToList();
         }
-        public async Task<bool> SaveChanges()
+        public async Task<bool> SaveChangesAsync()
         {
             if (await dataBase.SaveChangesAsync() > 0)
             {

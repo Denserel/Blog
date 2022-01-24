@@ -20,7 +20,7 @@ namespace Blog.Controllers
             return View(posts);
         }
 
-        public IActionResult Post (int id)
+        public IActionResult Post(int id)
         {
             var post = repository.getPost(id);
 
@@ -28,11 +28,39 @@ namespace Blog.Controllers
         }
 
         [HttpGet("/Image/{image}")]
-        public IActionResult Image (string image)
+        public IActionResult Image(string image)
         {
-            var mime = image.Substring(image.LastIndexOf('.')+ 1);
+            var mime = image.Substring(image.LastIndexOf('.') + 1);
 
             return new FileStreamResult(fileManager.GetImage(image), $"image/{mime}");
+        }
+
+        public async Task<IActionResult> Comment(CommentViewModel commentViewModel)
+        {
+            var post = repository.getPost(commentViewModel.PostId);
+            if (ModelState.IsValid)
+            {
+                if (commentViewModel.MainCommentId.HasValue)
+                {
+
+                }
+                else
+                {
+                    var comment = new MainComment
+                    {
+                        Message = commentViewModel.Message,
+                        DateCreated = DateTime.Now
+                    };
+
+                    post.Comments.Add(comment);
+
+                }
+
+                repository.updatePost(post);
+                await repository.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Post", new { id = commentViewModel.PostId } );
         }
     }
 }

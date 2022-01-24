@@ -79,7 +79,7 @@ namespace Blog.Controllers
                 repository.addPost(post);
             }
 
-            if (await repository.SaveChanges())
+            if (await repository.SaveChangesAsync())
             {
                 return RedirectToAction("Index");
             }
@@ -93,7 +93,7 @@ namespace Blog.Controllers
             fileManager.RemoveImage(repository.getPost(id).Image);
 
             repository.deletePost(id);
-            await repository.SaveChanges();
+            await repository.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }

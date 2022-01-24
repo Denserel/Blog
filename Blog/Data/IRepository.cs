@@ -8,6 +8,6 @@
         void deletePost(int id);
         void updatePost(Post post);
         void addPost(Post post);
-        Task<bool> SaveChanges();
+        Task<bool> SaveChangesAsync();
     }
 }

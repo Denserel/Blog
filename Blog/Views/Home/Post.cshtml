@@ -1,6 +1,6 @@
 ﻿@model Post
 @{
-    ViewBag.Titel = @Model.Title;
+    ViewBag.Title = @Model.Title;
     ViewBag.Description = @Model.Description;
     ViewBag.Keywords = @Model.Tags;
 }
@@ -10,13 +10,34 @@
     @if (!String.IsNullOrEmpty(Model.Image))
     {
         var path = $"/image/{Model.Image}";
+
         <figure>
             <img src="@path">
             <figcaption>@Model.Title</figcaption>
         </figure>
-    }
 
-    <div>
+    }
+    <div class="post-body">
         @Html.Raw(Model.Body)
+    </div>
+    <div class="comment">
+        @await Html.PartialAsync("CommentEditor", new CommentViewModel{ PostId = Model.Id})
+    </div>
+    <div class="comment-section">
+        @if (Model.Comments.Any())
+        {
+            @foreach (var comment in Model.Comments)
+            {
+                <p style="display:block">@comment.Message</p>
+                
+                if (comment.SubComments.Any())
+                {
+                    @foreach (var subComment in comment.SubComments)
+                    {
+
+                    }
+                }
+            }
+        }
     </div>
 </article>

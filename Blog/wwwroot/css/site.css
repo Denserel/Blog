@@ -58,7 +58,8 @@ form {
     }
 
 figure {
-    margin: 0.6rem;
+    display: grid;
+    margin: auto;
     width: 30rem;
     position: relative;
     box-shadow: 0 0 0.4rem black;
