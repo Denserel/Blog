@@ -13,16 +13,17 @@ namespace Blog.Controllers
             this.fileManager = fileManager;
         }
 
-        public IActionResult Index(string searchString)
+        public async Task <IActionResult> Index(string searchString, int pageSize = 5, int pageIndex = 1)
         {
-            var posts = string.IsNullOrEmpty(searchString) ? repository.getAllPosts() : repository.getAllPosts(searchString);
+            ViewData["searchString"] = searchString;
+            var posts = await PaginatedList<Post>.CreateAsync(await repository.getAllPostsAsync(searchString), pageSize, pageIndex);
 
             return View(posts);
         }
 
         public IActionResult Post(int id)
         {
-            var post = repository.getPost(id);
+            var post = repository.getPostAsync(id);
 
             return View(post);
         }
@@ -37,7 +38,7 @@ namespace Blog.Controllers
 
         public async Task<IActionResult> Comment(CommentViewModel commentViewModel)
         {
-            var post = repository.getPost(commentViewModel.PostId);
+            var post = await repository.getPostAsync(commentViewModel.PostId);
             if (ModelState.IsValid)
             {
                 if (commentViewModel.MainCommentId.HasValue)

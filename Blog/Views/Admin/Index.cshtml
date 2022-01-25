@@ -12,11 +12,11 @@
         {
             <div>
                 @post.Title
-                -
+                |
                 <a asp-controller="Admin" asp-action="Edit" asp-route-id="@post.Id">
                     Edit
                 </a>
-                -
+                |
                 <a asp-controller="Admin" asp-action="Delete" asp-route-id="@post.Id">
                     Delete
                 </a>

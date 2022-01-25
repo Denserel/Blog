@@ -15,22 +15,22 @@ namespace Blog.Controllers
             this.fileManager = fileManager;
         }
 
-        public IActionResult Index(string searchString)
+        public async Task <IActionResult> Index(string searchString, int pageSize, int pageIndex)
         {
-            var posts = string.IsNullOrEmpty(searchString) ? repository.getAllPosts() : repository.getAllPosts(searchString);
+            var posts = await repository.getAllPostsAsync(searchString);
 
             return View(posts);
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task <IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return View(new PostViewModel());
             }
 
-            var post = repository.getPost((int) id);
+            var post = await repository.getPostAsync((int) id);
             return View(new PostViewModel
             {
                 Id = post.Id,
@@ -90,9 +90,11 @@ namespace Blog.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            fileManager.RemoveImage(repository.getPost(id).Image);
+            var post = await repository.getPostAsync(id);
 
-            repository.deletePost(id);
+            fileManager.RemoveImage(post.Image);
+
+            repository.deletePostAsync(id);
             await repository.SaveChangesAsync();
 
             return RedirectToAction("Index");

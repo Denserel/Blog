@@ -20,25 +20,24 @@
     <div class="post-body">
         @Html.Raw(Model.Body)
     </div>
-    <div class="comment">
-        @await Html.PartialAsync("CommentEditor", new CommentViewModel{ PostId = Model.Id})
-    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="comment">
+            @await Html.PartialAsync("CommentEditor", new CommentViewModel{ PostId = Model.Id})
+        </div>
+    }
     <div class="comment-section">
-        @if (Model.Comments.Any())
+        @foreach (var comment in Model.Comments)
         {
-            @foreach (var comment in Model.Comments)
-            {
-                <div>
-                    @Html.Raw(@comment.Message)
-                </div>
-                if (comment.SubComments.Any())
-                {
-                    @foreach (var subComment in comment.SubComments)
-                    {
+            <div>
+                @Html.Raw(@comment.Message)
+            </div>
 
-                    }
-                }
+            @foreach (var subComment in comment.SubComments)
+            {
+
             }
         }
+
     </div>
 </article>

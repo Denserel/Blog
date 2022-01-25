@@ -2,10 +2,10 @@
 {
     public interface IRepository
     {
-        Post getPost(int id);
+        Task <Post> getPostAsync(int id);
         List<Post> getAllPosts();
-        List<Post> getAllPosts(string category);
-        void deletePost(int id);
+        Task <List<Post>> getAllPostsAsync(string searchString);
+        Task deletePostAsync(int id);
         void updatePost(Post post);
         void addPost(Post post);
         Task<bool> SaveChangesAsync();
