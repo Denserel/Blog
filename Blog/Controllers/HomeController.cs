@@ -13,9 +13,9 @@ namespace Blog.Controllers
             this.fileManager = fileManager;
         }
 
-        public IActionResult Index(string category)
+        public IActionResult Index(string searchString)
         {
-            var posts = string.IsNullOrEmpty(category) ? repository.getAllPosts() : repository.getAllPosts(category);
+            var posts = string.IsNullOrEmpty(searchString) ? repository.getAllPosts() : repository.getAllPosts(searchString);
 
             return View(posts);
         }

@@ -28,8 +28,9 @@
         {
             @foreach (var comment in Model.Comments)
             {
-                <p style="display:block">@comment.Message</p>
-                
+                <div>
+                    @Html.Raw(@comment.Message)
+                </div>
                 if (comment.SubComments.Any())
                 {
                     @foreach (var subComment in comment.SubComments)

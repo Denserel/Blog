@@ -6,7 +6,7 @@
         <input asp-for="Id" type="hidden" />
         <div>
             <label>Titel</label>
-            <input asp-for="Title"/>
+            <input asp-for="Title" />
         </div>
         <div>
             <label>Description</label>
@@ -14,11 +14,11 @@
         </div>
         <div>
             <label>Tags</label>
-            <input asp-for="Tags"/>
+            <input asp-for="Tags" />
         </div>
         <div>
             <label>Category</label>
-            <input asp-for="Category"/>
+            <input asp-for="Category" />
         </div>
         <div>
             <label>Body</label>
@@ -27,12 +27,13 @@
         <div>
             <label>Image</label>
             <input asp-for="CurrentImage" type="hidden" />
-            <input asp-for="Image"/>
+            <input asp-for="Image" />
         </div>
         <input type="submit" value="Submit" />
     </form>
+    <a asp-controller="Admin" asp-action="Index">Back to list</a>
 </div>
 
 @section scripts{
-    
+
 }

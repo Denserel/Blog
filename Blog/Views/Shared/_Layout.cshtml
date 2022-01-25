@@ -7,13 +7,17 @@
     <meta name="description" content="@ViewBag.Description" />
     <meta name="keywords" content="@ViewBag.Keywords" />
     <title>@ViewBag.Title</title>
-    
+
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
         <nav>
-            <a asp-controller="Home" asp-action="index">Home</a>
+            <a asp-controller="Home" asp-action="index" >Home</a>
+            <form asp-controller="home" asp-action="index" method="get">
+                <input type="search" name="SearchString" />
+                <input type="submit" value="Search" />
+            </form>
             @if (User.Identity.IsAuthenticated)
             {
                 <a asp-controller="Admin" asp-action="index">Admin</a>
@@ -28,7 +32,12 @@
     <main>
         @RenderBody()
     </main>
-    
+
     @RenderSection("scripts", false)
+    <script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('editor')
+    </script>
+    
 </body>
 </html>

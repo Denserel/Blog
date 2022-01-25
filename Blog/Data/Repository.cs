@@ -35,10 +35,12 @@
         {
             return dataBase.Posts.ToList();
         }
-        public List<Post> getAllPosts(string category)
+        public List<Post> getAllPosts(string searchString)
         {
             return dataBase.Posts
-                .Where(post => post.Category.ToLower().Equals(category.ToLower()))
+                .Where(post => post.Category.ToLower().Contains(searchString.ToLower())
+                || post.Tags.ToLower().Contains(searchString.ToLower())
+                || post.Title.ToLower().Contains(searchString.ToLower()))
                 .ToList();
         }
         public async Task<bool> SaveChangesAsync()
