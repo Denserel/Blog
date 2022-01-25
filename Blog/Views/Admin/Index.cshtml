@@ -1,12 +1,12 @@
-﻿@model IEnumerable<Post>
+﻿@model PaginatedList<Post>
+@{
+    ViewBag.Controller = "Admin";
+    ViewBag.Titel = "Admin";
+}
 
 <div class="container">
     <h2>Admin page!</h2>
     <a asp-controller="Admin" asp-action="Edit">Create Post</a>
-    <form asp-controller="Admin" asp-action="index" method="get">
-        <input type="search" name="SearchString" />
-        <input type="submit" value="Search" />
-    </form>
     <div>
         @foreach (var post in Model)
         {
@@ -22,6 +22,15 @@
                 </a>
             </div>
         }
-
+    </div>
+    <div style="display:flex">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-controller="Admin" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["searchString"]">Previus</a>
+        }
+        @if (Model.HasNextPage)
+        {
+            <a style="margin-left:auto" asp-controller="Admin" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["searchString"]">Next</a>
+        }
     </div>
 </div>

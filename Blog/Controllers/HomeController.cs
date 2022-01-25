@@ -21,9 +21,9 @@ namespace Blog.Controllers
             return View(posts);
         }
 
-        public IActionResult Post(int id)
+        public async Task <IActionResult> Post(int id)
         {
-            var post = repository.getPostAsync(id);
+            var post = await repository.getPostAsync(id);
 
             return View(post);
         }

@@ -15,9 +15,10 @@ namespace Blog.Controllers
             this.fileManager = fileManager;
         }
 
-        public async Task <IActionResult> Index(string searchString, int pageSize, int pageIndex)
+        public async Task <IActionResult> Index(string searchString, int pageSize = 20, int pageIndex = 1)
         {
-            var posts = await repository.getAllPostsAsync(searchString);
+            ViewData["searchString"] = searchString;
+            var posts = await PaginatedList<Post>.CreateAsync(await repository.getAllPostsAsync(searchString), pageSize, pageIndex);
 
             return View(posts);
         }
