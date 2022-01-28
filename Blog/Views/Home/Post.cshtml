@@ -30,7 +30,7 @@
         @foreach (var comment in Model.Comments)
         {
             <div>
-                @Html.Raw(@comment.Message)
+                @Html.Raw(comment.Message)
             </div>
 
             @foreach (var subComment in comment.SubComments)
@@ -38,6 +38,12 @@
 
             }
         }
-
     </div>
 </article>
+
+@section scripts{
+    <script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('editor')
+    </script>
+}

@@ -95,7 +95,7 @@ namespace Blog.Controllers
 
             fileManager.RemoveImage(post.Image);
 
-            repository.deletePostAsync(id);
+            await repository.deletePostAsync(id);
             await repository.SaveChangesAsync();
 
             return RedirectToAction("Index");

@@ -1,7 +1,7 @@
 ﻿body {
     margin: 0;
-    background-color:hsl(0, 1%, 16%);
-    color:white
+    background-color: hsl(0, 1%, 16%);
+    color: white
 }
 
 a {
@@ -26,9 +26,9 @@ nav {
         padding: 1rem
     }
 
-        nav a:last-child {
-            margin-left: auto;
-        }
+    nav form {
+        margin-right: auto;
+    }
 
 form {
     display: grid;
@@ -36,6 +36,11 @@ form {
 }
 
     form label {
+        display: block;
+    }
+
+    form span{
+        color: red;
         display: block;
     }
 
@@ -60,10 +65,9 @@ form {
 figure {
     display: grid;
     margin: auto;
-    width: 30rem;
+    max-width: 30rem;
     position: relative;
     box-shadow: 0 0 0.4rem black;
-    height: 30rem;
 }
 
     figure img {
@@ -86,6 +90,20 @@ figure {
     justify-content: center;
     max-width: 50rem;
     width: 100%;
-    height:100%;
+    height: 100%;
     margin: 1rem auto;
 }
+
+.pagination {
+    display: flex
+}
+
+    .pagination a {
+    }
+
+    .pagination .next{
+        margin-left: auto;
+    }
+    .pagination .previus {
+        
+    }

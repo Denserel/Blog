@@ -21,14 +21,14 @@
             </figure>
         </a>
     }
-    <div style="display:flex">
+    <div class="pagination">
         @if (Model.HasPreviousPage)
         {
-            <a asp-controller="Home" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["searchString"]">Previus</a>
+            <a class="previus" asp-controller="Home" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["searchString"]">Previus</a>
         }
         @if (Model.HasNextPage)
         {
-            <a style="margin-left:auto" asp-controller="Home" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["searchString"]">Next</a>
+            <a class="next" asp-controller="Home" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["searchString"]">Next</a>
         }
     </div>
 </div>
