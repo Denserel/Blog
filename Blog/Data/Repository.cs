@@ -8,18 +8,15 @@
         {
             this.dataBase = dataBase;
         }
-
-        public void addPost(Post post)
+        public async Task addPost(Post post)
         {
-            dataBase.Posts.Add(post);
+             await dataBase.Posts.AddAsync(post);
         }
-
         public async Task deletePostAsync(int id)
         {
             dataBase.Posts.Remove(await getPostAsync(id));
         }
-
-        public async Task <Post> getPostAsync(int id)
+        public async Task<Post> getPostAsync(int id)
         {
             var post = await dataBase.Posts
                 .Include(post => post.Comments)
@@ -28,7 +25,6 @@
 
             return post;
         }
-
         public void updatePost(Post post)
         {
             dataBase.Posts.Update(post);
@@ -37,18 +33,15 @@
         {
             return dataBase.Posts.ToList();
         }
-        public async Task <List<Post>> getAllPostsAsync(string searchString)
+        public async Task<IQueryable<Post>> getAllPostsAsync(string searchString)
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                return await dataBase.Posts
-                    .Where(post => post.Category.ToLower().Contains(searchString.ToLower())
-                    || post.Tags.ToLower().Contains(searchString.ToLower())
-                    || post.Title.ToLower().Contains(searchString.ToLower()))
-                    .ToListAsync();
-            }
+            //searchString = string.IsNullOrEmpty(searchString) ? "" : searchString;
+            searchString ??= "";
 
-            return await dataBase.Posts.ToListAsync();
+            return dataBase.Posts
+                .Where(post => post.Category.ToLower().Contains(searchString.ToLower())
+                || post.Tags.ToLower().Contains(searchString.ToLower())
+                || post.Title.ToLower().Contains(searchString.ToLower()));
         }
         public async Task<bool> SaveChangesAsync()
         {

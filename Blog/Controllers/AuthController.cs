@@ -7,11 +7,16 @@ namespace Blog.Controllers
     {
         private SignInManager<IdentityUser> signInManager;
         private UserManager<IdentityUser> userManager;
+        private readonly IEmailSender emailSender;
 
-        public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public AuthController(
+            SignInManager<IdentityUser> signInManager,
+            UserManager<IdentityUser> userManager,
+            IEmailSender emailSender)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.emailSender = emailSender;
         }
 
         [HttpGet]
@@ -35,6 +40,7 @@ namespace Blog.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+        
         [HttpGet]
         public async Task<IActionResult> Register()
         {
@@ -56,6 +62,9 @@ namespace Blog.Controllers
 
                 if (result.Succeeded)
                 {
+                    var message = "Welcome to bobs blog";
+
+                    await emailSender.SendEmailAsync(registerViewModel.Email, "Welcome", message);
                     await signInManager.SignInAsync(user, false);
 
                     return RedirectToAction("Index", "Home");

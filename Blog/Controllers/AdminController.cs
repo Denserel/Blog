@@ -77,7 +77,7 @@ namespace Blog.Controllers
             }
             else
             {
-                repository.addPost(post);
+               await repository.addPost(post);
             }
 
             if (await repository.SaveChangesAsync())
