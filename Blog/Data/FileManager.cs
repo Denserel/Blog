@@ -3,10 +3,12 @@
     public class FileManager : IFileManager
     {
         private string imagePath;
+        private readonly IWebHostEnvironment hostEnvironment;
 
-        public FileManager(IConfiguration configuration)
+        public FileManager(IWebHostEnvironment hostEnvironment)
         {
-            imagePath = configuration["Path:Images"];
+            imagePath = hostEnvironment.WebRootPath + "/img/blog";
+            this.hostEnvironment = hostEnvironment;
         }
 
         public FileStream GetImage(string image)
@@ -15,18 +17,19 @@
         }
 
 
-        public async Task<string> SaveImage(IFormFile image)
+        public async Task<string> SaveImageAsync(IFormFile image)
         {
             try
             {
                 var path = Path.Combine(imagePath);
+               
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
                 
-                var mime = image.FileName.Substring(image.FileName.LastIndexOf('.'));
-                var fileName = $"img_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}{mime}";
+                
+                var fileName = Guid.NewGuid().ToString()+image.FileName;
 
                 using (var fileStream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
                 {

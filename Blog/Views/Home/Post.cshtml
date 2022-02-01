@@ -23,12 +23,13 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="comment">
-            @await Html.PartialAsync("CommentEditor", new CommentViewModel{ PostId = Model.Id})
+            @await Html.PartialAsync("CommentEditor", new CommentViewModel{ PostId = Model.Id, User = User.Identity.Name})
         </div>
     }
     <div class="comment-section">
         @foreach (var comment in Model.Comments)
         {
+            <h6>@comment.User</h6>
             <div>
                 @Html.Raw(comment.Message)
             </div>

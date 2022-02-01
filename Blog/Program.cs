@@ -20,14 +20,15 @@ builder.Services.AddTransient<IRepository, Repository>();
 builder.Services.AddTransient<IFileManager, FileManager>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(nameof(SmtpSettings)));
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 // Seed Admin
 try
 {
-    var context = app.Services.GetRequiredService<AppDbContext>();
-    var roleManager = app.Services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = app.Services.GetRequiredService<UserManager<IdentityUser>>();
+    var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
+    var roleManager = app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = app.Services.CreateScope().ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
     context.Database.EnsureCreated();
 

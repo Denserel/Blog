@@ -8,11 +8,16 @@ namespace Blog.Controllers
     {
         private readonly IRepository repository;
         private readonly IFileManager fileManager;
+        private readonly IMapper mapper;
 
-        public AdminController(IRepository repository, IFileManager fileManager)
+        public AdminController(
+            IRepository repository, 
+            IFileManager fileManager, 
+            IMapper mapper)
         {
             this.repository = repository;
             this.fileManager = fileManager;
+            this.mapper = mapper;
         }
 
         public async Task <IActionResult> Index(string searchString, int pageSize = 20, int pageIndex = 1)
@@ -32,30 +37,15 @@ namespace Blog.Controllers
             }
 
             var post = await repository.getPostAsync((int) id);
-            return View(new PostViewModel
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Body = post.Body,
-                Description = post.Description,
-                Tags = post.Tags,
-                Category = post.Category,
-                CurrentImage = post.Image
-            });
+            var postVm = mapper.Map<Post, PostViewModel>(post);
+            postVm.CurrentImage = post.Image;
+            return View(postVm);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(PostViewModel postVm)
         {
-            Post post = new ()
-            {
-                Id = postVm.Id,
-                Title = postVm.Title,
-                Body = postVm.Body,
-                Description = postVm.Description,
-                Tags = postVm.Tags,
-                Category = postVm.Category
-            };
+            var post = mapper.Map<PostViewModel,Post>(postVm);
 
             if(postVm.Image == null)
             {
@@ -63,15 +53,15 @@ namespace Blog.Controllers
             }
             else
             {
-                if (!string.IsNullOrEmpty(postVm.CurrentImage))
+                post.Image = await fileManager.SaveImageAsync(postVm.Image);
+                
+                if(!string.IsNullOrEmpty(postVm.CurrentImage))
                 {
                     fileManager.RemoveImage(postVm.CurrentImage);
                 }
-
-                post.Image = await fileManager.SaveImage(postVm.Image);
             }
 
-            if (post.Id > 0)
+            if (postVm.Id > 0)
             {
                 repository.updatePost(post);
             }
@@ -85,7 +75,7 @@ namespace Blog.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(post);
+            return View(postVm);
         }
 
         [HttpGet]
@@ -95,6 +85,7 @@ namespace Blog.Controllers
 
             fileManager.RemoveImage(post.Image);
 
+            
             await repository.deletePostAsync(id);
             await repository.SaveChangesAsync();
 

@@ -1,4 +1,5 @@
-﻿using Blog.ViewModels;
+﻿
+using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers
@@ -8,15 +9,18 @@ namespace Blog.Controllers
         private SignInManager<IdentityUser> signInManager;
         private UserManager<IdentityUser> userManager;
         private readonly IEmailSender emailSender;
+        private readonly IMapper mapper;
 
         public AuthController(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMapper mapper)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.emailSender = emailSender;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -52,11 +56,7 @@ namespace Blog.Controllers
         {
             if(ModelState.IsValid)
             {
-                var user = new IdentityUser
-                {
-                    UserName = registerViewModel.UserName,
-                    Email = registerViewModel.Email
-                };
+                var user = mapper.Map<RegisterViewModel, IdentityUser>(registerViewModel);
 
                 var result = await userManager.CreateAsync(user, registerViewModel.Password);
 

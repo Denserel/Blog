@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Blog.Controllers
 {
@@ -6,11 +7,15 @@ namespace Blog.Controllers
     {
         private readonly IRepository repository;
         private readonly IFileManager fileManager;
+        private readonly IMapper mapper;
 
-        public HomeController(IRepository repository, IFileManager fileManager)
+        public HomeController(IRepository repository, 
+            IFileManager fileManager,
+            IMapper mapper)
         {
             this.repository = repository;
             this.fileManager = fileManager;
+            this.mapper = mapper;
         }
 
         public async Task <IActionResult> Index(string searchString, int pageSize = 5, int pageIndex = 1)
@@ -31,9 +36,10 @@ namespace Blog.Controllers
         [HttpGet("/Image/{image}")]
         public IActionResult Image(string image)
         {
-            var mime = image.Substring(image.LastIndexOf('.') + 1);
+            var contentType = string.Empty;
+            new FileExtensionContentTypeProvider().TryGetContentType(image, out contentType);
 
-            return new FileStreamResult(fileManager.GetImage(image), $"image/{mime}");
+            return new FileStreamResult(fileManager.GetImage(image), contentType);
         }
 
         public async Task<IActionResult> Comment(CommentViewModel commentViewModel)
@@ -47,14 +53,9 @@ namespace Blog.Controllers
                 }
                 else
                 {
-                    var comment = new MainComment
-                    {
-                        Message = commentViewModel.Message,
-                        DateCreated = DateTime.Now
-                    };
-
+                    var comment = mapper.Map<CommentViewModel, MainComment>(commentViewModel);
+                    
                     post.Comments.Add(comment);
-
                 }
 
                 repository.updatePost(post);

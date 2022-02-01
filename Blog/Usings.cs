@@ -6,3 +6,4 @@ global using Microsoft.EntityFrameworkCore;
 global using Blog.Models.Comments;
 global using Blog.Service;
 global using Microsoft.AspNetCore.Identity.UI.Services;
+global using AutoMapper;

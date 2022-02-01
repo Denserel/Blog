@@ -7,6 +7,7 @@ namespace Blog.Models.Comments
     {
         public int Id { get; set; }
         public string Message { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.Now;
+        public string User { get; set; }
     }
 }
