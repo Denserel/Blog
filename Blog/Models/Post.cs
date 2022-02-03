@@ -1,9 +1,11 @@
 ﻿using Blog.Models.Comments;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Models
 {
     public class Post
     {
+        [Key]
         public int Id { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
