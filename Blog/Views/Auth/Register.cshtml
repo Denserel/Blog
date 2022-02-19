@@ -1,7 +1,7 @@
 ﻿@model RegisterViewModel
 
 <div class="container">
-    <form asp-controller="Auth" asp-action="Register" method="post">
+    <form asp-controller="Auth" asp-action="Register"  asp-antiforgery="true" method="post">
         <div>
             <label>User</label>
             <input asp-for="UserName" />

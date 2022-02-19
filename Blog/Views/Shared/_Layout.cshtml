@@ -18,7 +18,7 @@
                 <a asp-controller="Admin" asp-action="index">Admin</a>
             }    
             <form asp-controller="@ViewBag.Controller" asp-action="index" method="get">
-                <input type="search" name="SearchString" />
+                <input type="search" name="SearchString" value ="@ViewData["searchString"]" />
                 <input type="submit" value="Search" />
             </form>
             <partial name="PartialLogin" />

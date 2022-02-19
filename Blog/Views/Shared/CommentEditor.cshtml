@@ -5,5 +5,6 @@
     <input asp-for="MainCommentId" type="hidden" />
     <input asp-for="User" type="hidden" />
     <textarea asp-for="Message" id="editor" ></textarea>
-     <input type="submit" value="Submit" />
+    <span asp-validation-for="Message"></span>
+    <input type="submit" value="Submit" />
 </form>

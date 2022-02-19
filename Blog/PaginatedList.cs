@@ -22,13 +22,13 @@
             get { return (PageIndex < TotalPages); }
         }
         
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> list, int pageSize, int pageIndex)
+        public static async Task<PaginatedList<T>> CreateAsync(List<T> list, int pageSize, int pageIndex)
         {
-            var listSize = await list.CountAsync();
-            var page = await list
+            var listSize =  list.Count;
+            var page = list
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
-                .ToListAsync();
+                .ToList();
                 
             return new PaginatedList<T>(page, listSize, pageSize, pageIndex);
         }

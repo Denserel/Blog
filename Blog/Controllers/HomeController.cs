@@ -21,6 +21,7 @@ namespace Blog.Controllers
         public async Task <IActionResult> Index(string searchString, int pageSize = 5, int pageIndex = 1)
         {
             ViewData["searchString"] = searchString;
+
             var posts = await PaginatedList<Post>.CreateAsync(await repository.getAllPostsAsync(searchString), pageSize, pageIndex);
 
             return View(posts);
@@ -31,15 +32,6 @@ namespace Blog.Controllers
             var post = await repository.getPostAsync(id);
 
             return View(post);
-        }
-
-        [HttpGet("/Image/{image}")]
-        public IActionResult Image(string image)
-        {
-            var contentType = string.Empty;
-            new FileExtensionContentTypeProvider().TryGetContentType(image, out contentType);
-
-            return new FileStreamResult(fileManager.GetImage(image), contentType);
         }
 
         public async Task<IActionResult> Comment(CommentViewModel commentViewModel)
@@ -63,6 +55,16 @@ namespace Blog.Controllers
             }
 
             return RedirectToAction("Post", new { id = commentViewModel.PostId } );
+        }
+
+
+        [HttpGet("/Image/{image}")]
+        public IActionResult Image(string image)
+        {
+            var contentType = string.Empty;
+            new FileExtensionContentTypeProvider().TryGetContentType(image, out contentType);
+
+            return new FileStreamResult(fileManager.GetImage(image), contentType);
         }
     }
 }

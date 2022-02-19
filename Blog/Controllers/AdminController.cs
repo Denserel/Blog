@@ -43,6 +43,7 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PostViewModel postVm)
         {
             var post = mapper.Map<PostViewModel,Post>(postVm);

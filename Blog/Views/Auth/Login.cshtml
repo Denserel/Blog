@@ -2,7 +2,7 @@
 
 
 <div class="container">
-    <form asp-controller="Auth" asp-action="Login" method="post">
+    <form asp-controller="Auth" asp-action="Login" asp-antiforgery="true" method="post">
         <div>
             <label>User</label>
             <input asp-for="UserName" />
