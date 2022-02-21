@@ -28,7 +28,7 @@ namespace Blog.Test
         [Fact]
         public async Task Index_OnGetCall_ReturnAllPosts ()
         {
-            var posts = new List<Post>() { CreateRandomPost(), CreateRandomPost(), CreateRandomPost()};
+            var posts = new List<Post>() { Helpers.CreateRandomPost(random), Helpers.CreateRandomPost(random), Helpers.CreateRandomPost(random) };
             var searchString = string.Empty;
             mockRepository.Setup(repository => repository.getAllPostsAsync(searchString)).ReturnsAsync(posts);
             var conroller = new HomeController(mockRepository.Object, fileManager, mapper);
@@ -43,7 +43,7 @@ namespace Blog.Test
         [Fact]
         public async Task Post_ProvidingPostId_ReturnPost()
         {
-            var post = CreateRandomPost();
+            var post = Helpers.CreateRandomPost(random);
             mockRepository.Setup(repository => repository.getPostAsync(post.Id)).ReturnsAsync(post);
             var conroller = new HomeController(mockRepository.Object, fileManager, mapper);
 
@@ -57,8 +57,8 @@ namespace Blog.Test
         [Fact]
         public async Task Comment_ReturnRedirectAndPost_WhenModdelStateIsValid()
         {
-            var post = CreateRandomPost();
-            var comment = CreateRandomComment();
+            var post = Helpers.CreateRandomPost(random);
+            var comment = Helpers.CreateRandomComment(random);
             comment.PostId = post.Id;
             mockRepository.Setup(repository => repository.getPostAsync(post.Id)).ReturnsAsync(post);
             var moqMapper = new MapperConfiguration(config =>
@@ -72,33 +72,6 @@ namespace Blog.Test
 
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Post", redirectToActionResult.ActionName);
-        }
-
-        private Post CreateRandomPost ()
-        {
-            return new Post()
-            {
-                Id = random.Next(999),
-                Title = Guid.NewGuid().ToString(),
-                Body = Guid.NewGuid().ToString(),
-                Image = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                Tags = Guid.NewGuid().ToString(),
-                Category = Guid.NewGuid().ToString(),
-                Created = DateTime.UtcNow,
-                Comments = new List<MainComment> { }
-            };
-        }
-
-        private CommentViewModel CreateRandomComment()
-        {
-            return new CommentViewModel()
-            {
-                PostId = random.Next(),
-                MainCommentId = null,
-                Message = Guid.NewGuid().ToString(),
-                User = Guid.NewGuid().ToString()
-            };
         }
     }
 }

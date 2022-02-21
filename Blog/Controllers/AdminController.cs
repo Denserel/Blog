@@ -11,8 +11,8 @@ namespace Blog.Controllers
         private readonly IMapper mapper;
 
         public AdminController(
-            IRepository repository, 
-            IFileManager fileManager, 
+            IRepository repository,
+            IFileManager fileManager,
             IMapper mapper)
         {
             this.repository = repository;
@@ -20,7 +20,7 @@ namespace Blog.Controllers
             this.mapper = mapper;
         }
 
-        public async Task <IActionResult> Index(string searchString, int pageSize = 20, int pageIndex = 1)
+        public async Task<IActionResult> Index(string searchString, int pageSize = 20, int pageIndex = 1)
         {
             ViewData["searchString"] = searchString;
             var posts = await PaginatedList<Post>.CreateAsync(await repository.getAllPostsAsync(searchString), pageSize, pageIndex);
@@ -29,14 +29,14 @@ namespace Blog.Controllers
         }
 
         [HttpGet]
-        public async Task <IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return View(new PostViewModel());
             }
 
-            var post = await repository.getPostAsync((int) id);
+            var post = await repository.getPostAsync((int)id);
             var postVm = mapper.Map<Post, PostViewModel>(post);
             postVm.CurrentImage = post.Image;
             return View(postVm);
@@ -46,36 +46,39 @@ namespace Blog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PostViewModel postVm)
         {
-            var post = mapper.Map<PostViewModel,Post>(postVm);
+            if (ModelState.IsValid)
+            {
+                var post = mapper.Map<PostViewModel, Post>(postVm);
 
-            if(postVm.Image == null)
-            {
-                post.Image = postVm.CurrentImage;
-            }
-            else
-            {
-                post.Image = await fileManager.SaveImageAsync(postVm.Image);
-                
-                if(!string.IsNullOrEmpty(postVm.CurrentImage))
+                if (postVm.Image == null)
                 {
-                    fileManager.RemoveImage(postVm.CurrentImage);
+                    post.Image = postVm.CurrentImage;
+                }
+                else
+                {
+                    post.Image = await fileManager.SaveImageAsync(postVm.Image);
+
+                    if (!string.IsNullOrEmpty(postVm.CurrentImage))
+                    {
+                        fileManager.RemoveImage(postVm.CurrentImage);
+                    }
+                }
+
+                if (postVm.Id > 0)
+                {
+                    repository.updatePost(post);
+                }
+                else
+                {
+                    await repository.addPost(post);
+                }
+
+                if (await repository.SaveChangesAsync())
+                {
+                    return RedirectToAction("Index");
                 }
             }
-
-            if (postVm.Id > 0)
-            {
-                repository.updatePost(post);
-            }
-            else
-            {
-               await repository.addPost(post);
-            }
-
-            if (await repository.SaveChangesAsync())
-            {
-                return RedirectToAction("Index");
-            }
-
+               
             return View(postVm);
         }
 
@@ -86,7 +89,7 @@ namespace Blog.Controllers
 
             fileManager.RemoveImage(post.Image);
 
-            
+
             await repository.deletePostAsync(id);
             await repository.SaveChangesAsync();
 

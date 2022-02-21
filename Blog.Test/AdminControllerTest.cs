@@ -18,18 +18,18 @@ namespace Blog.Test
 {
     public class AdminControllerTest
     {
-        private IFileManager fileManager;
+        private Mock<IFileManager> mockFileManager = new Mock<IFileManager>();
         private readonly Random random = new();
         private Mock<IMapper> mockMapper = new Mock<IMapper>();
         private readonly Mock<IRepository> mockRepository = new Mock<IRepository>();
 
         [Fact]
-        public async Task Index_OnGetCall_ReturnAllPosts()
+        public async Task Index_OnGet_ReturnAllPosts()
         {
-            var posts = new List<Post>() { CreateRandomPost(), CreateRandomPost(), CreateRandomPost() };
+            var posts = new List<Post>() { Helpers.CreateRandomPost(random), Helpers.CreateRandomPost(random), Helpers.CreateRandomPost(random) };
             var searchString = string.Empty;
             mockRepository.Setup(repository => repository.getAllPostsAsync(searchString)).ReturnsAsync(posts);
-            var conroller = new AdminController(mockRepository.Object, fileManager, mockMapper.Object);
+            var conroller = new AdminController(mockRepository.Object, mockFileManager.Object, mockMapper.Object);
 
             var result = await conroller.Index(searchString);
 
@@ -39,9 +39,28 @@ namespace Blog.Test
         }
 
         [Fact]
+        public async Task Index_WithSearchString_ReturnPostContainingSearchString ()
+        {
+            var posts = new List<Post>() { Helpers.CreateRandomPost(random), Helpers.CreateRandomPost(random), Helpers.CreateRandomPost(random) };
+            var searchString = posts[1].Title;
+            mockRepository.Setup(repository => repository.getAllPostsAsync(searchString))
+                .ReturnsAsync(posts.Where(post => post.Category.Contains(searchString)
+                                || post.Tags.Contains(searchString)
+                                || post.Title.Contains(searchString)).ToList());
+            var conroller = new AdminController(mockRepository.Object, mockFileManager.Object, mockMapper.Object);
+
+            var result = await conroller.Index(searchString);
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<PaginatedList<Post>>(viewResult.ViewData.Model);
+            Assert.Equal(posts[1].Id, model[0].Id);
+            Assert.Equal(1, model.Count);
+        }
+
+        [Fact]
         public async Task Edit_IdIsNull_ReturnViewWithPostViewModel()
         {
-            var controller = new AdminController(mockRepository.Object, fileManager, mockMapper.Object);
+            var controller = new AdminController(mockRepository.Object, mockFileManager.Object, mockMapper.Object);
 
             var result = await controller.Edit(id: null);
 
@@ -52,14 +71,14 @@ namespace Blog.Test
         [Fact]
         public async Task Edit_PrivideId_ReturnPostToEdit()
         {
-            var post = CreateRandomPost();
+            var post = Helpers.CreateRandomPost(random);
             mockRepository.Setup(repository => repository.getPostAsync(post.Id)).ReturnsAsync(post);
             var moqMapper = new MapperConfiguration(config =>
             {
                 config.AddProfile(new MappingProfile());
             });
             var mapper = moqMapper.CreateMapper();
-            var conroller = new AdminController(mockRepository.Object, fileManager, mapper);
+            var conroller = new AdminController(mockRepository.Object, mockFileManager.Object, mapper);
 
             var result = await conroller.Edit(id: post.Id);
 
@@ -68,31 +87,59 @@ namespace Blog.Test
             Assert.Equal(post.Id, model.Id);
         }
 
-        private Post CreateRandomPost()
+        [Fact]
+        public async Task Edit_WhenModelStateIsValid_RedirectToActionIndex()
         {
-            return new Post()
+            var postViewModel = Helpers.CreateRandomPostViewModel(random);
+            if (postViewModel.Id > 0)
             {
-                Id = random.Next(999),
-                Title = Guid.NewGuid().ToString(),
-                Body = Guid.NewGuid().ToString(),
-                Image = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                Tags = Guid.NewGuid().ToString(),
-                Category = Guid.NewGuid().ToString(),
-                Created = DateTime.UtcNow,
-                Comments = new List<MainComment> { }
-            };
+                mockRepository.Setup(repository => repository.updatePost(It.IsAny<Post>())).Verifiable();
+            }
+            else
+            {
+                 mockRepository.Setup(repository => repository.addPost(It.IsAny<Post>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+            }
+            mockRepository.Setup(repository => repository.SaveChangesAsync()).ReturnsAsync(true);
+            var moqMapper = new MapperConfiguration(config =>
+            {
+                config.AddProfile(new MappingProfile());
+            });
+            var mapper = moqMapper.CreateMapper();
+            var conroller = new AdminController(mockRepository.Object, mockFileManager.Object, mapper);
+
+            var result = await conroller.Edit(postViewModel);
+
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
+            mockRepository.Verify();
         }
 
-        private CommentViewModel CreateRandomComment()
+        [Fact]
+        public async Task Edit_WhenModelStateIsInValid_ReturnsViewResult()
         {
-            return new CommentViewModel()
-            {
-                PostId = random.Next(),
-                MainCommentId = null,
-                Message = Guid.NewGuid().ToString(),
-                User = Guid.NewGuid().ToString()
-            };
+            var postViewModel = Helpers.CreateRandomPostViewModel(random);
+            var conroller = new AdminController(mockRepository.Object, mockFileManager.Object, mockMapper.Object);
+            conroller.ModelState.AddModelError("Title", "Required");
+
+            var result = await conroller.Edit(postViewModel);
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.IsAssignableFrom<PostViewModel>(viewResult.ViewData.Model);
+        }
+
+        [Fact]
+        public async Task Delete_PrivideId_RedirectToActionIndex()
+        {
+            var post = Helpers.CreateRandomPost(random);
+            mockRepository.Setup(repository => repository.getPostAsync(post.Id)).ReturnsAsync(post);
+            var controller = new AdminController(mockRepository.Object, mockFileManager.Object, mockMapper.Object);
+
+            var result = await controller.Delete(id: post.Id);
+
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
         }
     }
 
