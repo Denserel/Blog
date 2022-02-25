@@ -29,26 +29,22 @@
         {
             dataBase.Posts.Update(post);
         }
-        /*public List<Post> getAllPosts()
+        
+        public async Task<List<Post>> getAllPostsAsync(string searchString = "")
         {
-            return dataBase.Posts.ToList();
-        }*/
-        public async Task<List<Post>> getAllPostsAsync(string searchString)
-        {
-            //searchString = string.IsNullOrEmpty(searchString) ? "" : searchString;
-            searchString ??= "";
+            //searchString ??= "";
 
             var posts = from post in dataBase.Posts
                         select post;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                posts = posts.Where(post => post.Category.Contains(searchString) 
+                                    || post.Tags.Contains(searchString)
+                                    || post.Title.Contains(searchString));
+            }
             
-            posts = posts.Where(post => post.Category.Contains(searchString) 
-                                || post.Tags.Contains(searchString)
-                                || post.Title.Contains(searchString));
             return await posts.ToListAsync();
-            /*return dataBase.Posts
-                .Where(post => post.Category.Contains(searchString)
-                || post.Tags.Contains(searchString)
-                || post.Title.Contains(searchString));*/
         }
         public async Task<bool> SaveChangesAsync()
         {

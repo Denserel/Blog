@@ -1,11 +1,19 @@
 
+using Microsoft.Extensions.Configuration;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(configuration =>
+{
+    configuration.SignIn.RequireConfirmedEmail = true;
+})
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -16,9 +24,14 @@ builder.Services.AddWebOptimizer();
 
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddMailKit(configuration =>
+{
+    configuration.UseMailKit(builder.Configuration.GetSection("MailKitOptions").Get<MailKitOptions>());
+});
+
 builder.Services.AddTransient<IRepository, Repository>();
 builder.Services.AddTransient<IFileManager, FileManager>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(nameof(SmtpSettings)));
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -45,7 +58,8 @@ try
         var user = new IdentityUser
         {
             UserName = "administrator",
-            Email = "administrator@email.com"
+            Email = "administrator@email.com",
+            EmailConfirmed = true,
         };
         userManager.CreateAsync(user, "Strong0Password!").Wait();
 

@@ -73,12 +73,12 @@ namespace Blog.Controllers
                     await repository.addPost(post);
                 }
 
-                if (await repository.SaveChangesAsync())
-                {
-                    return RedirectToAction("Index");
-                }
+                await repository.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+
             }
-               
+
             return View(postVm);
         }
 

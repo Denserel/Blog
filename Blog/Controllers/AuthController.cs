@@ -1,6 +1,7 @@
 ﻿
 using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using NETCore.MailKit.Core;
 
 namespace Blog.Controllers
 {
@@ -8,19 +9,20 @@ namespace Blog.Controllers
     {
         private SignInManager<IdentityUser> signInManager;
         private UserManager<IdentityUser> userManager;
-        private readonly IEmailSender emailSender;
+        
         private readonly IMapper mapper;
+        private readonly IEmailService emailService;
 
         public AuthController(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
-            IEmailSender emailSender,
-            IMapper mapper)
+            IMapper mapper,
+            IEmailService emailService)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
-            this.emailSender = emailSender;
             this.mapper = mapper;
+            this.emailService = emailService;
         }
 
         [HttpGet]
@@ -35,7 +37,12 @@ namespace Blog.Controllers
         {
             var result = await signInManager.PasswordSignInAsync(authUserViewModel.UserName, authUserViewModel.Password, false, false);
 
-            return RedirectToAction("Index", "Home");
+            if(result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(authUserViewModel);
         }
 
         [HttpGet]
@@ -64,16 +71,35 @@ namespace Blog.Controllers
 
                 if (result.Succeeded)
                 {
-                    var message = "Welcome to bobs blog";
+                    var confermationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    await emailSender.SendEmailAsync(registerViewModel.Email, "Welcome", message);
-                    await signInManager.SignInAsync(user, false);
+                    var varifyLink = Url.Action(nameof(VarifyEmail),
+                        this.ControllerContext.RouteData.Values["controller"].ToString(), 
+                        new { userId = user.Id, confermationToken }, 
+                        Request.Scheme, 
+                        Request.Host.ToString());
 
-                    return RedirectToAction("Index", "Home");
+                    await emailService.SendAsync(user.Email, "Varify Email", $"<a href=\"{varifyLink}\">Varefy Email</a>", true);
+
+                    return RedirectToAction("EmailVarification");
                 }
             }
 
             return View(registerViewModel);
         }
+
+        public async Task<IActionResult> VarifyEmail (string userId, string confermationToken)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            
+            if (user == null) return BadRequest();
+            
+            await userManager.ConfirmEmailAsync(user, confermationToken);
+            await signInManager.SignInAsync(user, isPersistent: false);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> EmailVarification() => View();
     }
 }

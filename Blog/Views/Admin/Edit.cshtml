@@ -1,5 +1,8 @@
 ﻿@model PostViewModel
 
+@{
+    ViewBag.Title = Model.Id > 0 ? "Edit" : "Create";
+}
 
 <div class="container">
     <form asp-controller="Admin" asp-action="Edit" asp-antiforgery="true" method="post" enctype="multipart/form-data">
