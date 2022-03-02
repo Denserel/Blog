@@ -9,7 +9,6 @@ namespace Blog.Controllers
     {
         private SignInManager<IdentityUser> signInManager;
         private UserManager<IdentityUser> userManager;
-        
         private readonly IMapper mapper;
         private readonly IEmailService emailService;
 

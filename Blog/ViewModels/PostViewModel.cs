@@ -16,6 +16,6 @@ namespace Blog.ViewModels
         [Required]
         public string Category { get; set; }
         public string CurrentImage { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

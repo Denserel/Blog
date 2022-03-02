@@ -6,19 +6,21 @@
     ViewBag.Controller = "Home";
 }
 
-<div class="main-img">
+@*<div class="main-img">
     <span>A Blog</span>
-</div>
+</div>*@
 
 <div class="container">
     @foreach (var post in Model)
     {
-        var path = $"/image/{post.Image}";
+        @*var path = $"/image/{post.Image}";*@
         <a asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
-            <figure>
-                <img src="@path">
-                <figcaption>@post.Title</figcaption>
-            </figure>
+            <div class="card-post">
+                <div>
+                    <h3>@post.Title</h3>
+                    <p>@post.Description</p>
+                </div>
+            </div>
         </a>
     }
     <div class="pagination">

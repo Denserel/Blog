@@ -8,17 +8,18 @@
     <meta name="keywords" content="@ViewBag.Keywords" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://kit.fontawesome.com/a09830b4f6.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
         <nav>
-            <a asp-controller="Home" asp-action="index" >Home</a>
+            <a asp-controller="Home" asp-action="index"><i class="fa-solid fa-house"></i></a>
             @if (User.IsInRole("Administrator"))
             {
-                <a asp-controller="Admin" asp-action="index">Admin</a>
-            }    
+                <a asp-controller="Admin" asp-action="index"><i class="fa-solid fa-id-badge"></i></a>
+            }
             <form asp-controller="@ViewBag.Controller" asp-action="index" method="get">
-                <input type="search" name="SearchString" value ="@ViewData["searchString"]" />
+                <input type="search" name="SearchString" value="@ViewData["searchString"]" />
                 <input type="submit" value="Search" />
             </form>
             <partial name="PartialLogin" />
@@ -27,6 +28,21 @@
     <main>
         @RenderBody()
     </main>
+    <footer>
+        <section>
+            <div class="socials">
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+            <div class="contact-info">
+                <div><i class="fa-solid fa-envelope"></i> Bob@Blog.com</div>
+                <div><i class="fa-solid fa-phone"></i> +47 999 99 999</div>
+            </div>
+        </section>
+        <div class="coppyright">&copy; Copyright @DateTime.UtcNow.Year</div>
+    </footer>
     @RenderSection("scripts", false)
 </body>
 </html>
